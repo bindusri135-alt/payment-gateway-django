@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Payment Gateway</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 420px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 7px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .history-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .history-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>Payment Gateway</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Customer Name:</label>
+
+        <input
+            type="text"
+            name="customer_name"
+            placeholder="Enter your name"
+            value="{{ customer_name|default:'' }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>Email:</label>
+
+        <input
+            type="email"
+            name="customer_email"
+            placeholder="Enter your email"
+            value="{{ customer_email|default:'' }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>Amount:</label>
+
+        <input
+            type="number"
+            name="amount"
+            step="0.01"
+            placeholder="Enter amount"
+            value="{{ amount|default:'' }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>Payment Method:</label>
+
+        <select name="payment_method">
+
+            <option value="card">
+                Credit/Debit Card
+            </option>
+
+            <option value="upi">
+                UPI
+            </option>
+
+            <option value="netbanking">
+                Net Banking
+            </option>
+
+        </select>
+
+
+        {% if order %}
+
+        <button
+            type="button"
+            onclick="openRazorpay()"
+        >
+            Pay Now
+        </button>
+
+        {% else %}
+
+        <button type="submit">
+            Continue to Payment
+        </button>
+
+        {% endif %}
+
+    </form>
+
+
+    <a class="history-link" href="/history/">
+        View Transaction History
+    </a>
+
+</div>
+
+
+{% if order %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+function openRazorpay() {
+
+    var options = {
+
+        "key": "{{ razorpay_key }}",
+
+        "amount": "{{ order.amount }}",
+
+        "currency": "INR",
+
+        "name": "Payment Gateway",
+
+        "description": "Payment for Order",
+
+        "order_id": "{{ order.id }}",
+
+        "handler": function (response) {
+
+            alert(
+                "Payment successful!\nPayment ID: "
+                + response.razorpay_payment_id
+            );
+
+        },
+
+        "prefill": {
+
+            "name": "{{ customer_name }}",
+
+            "email": "{{ customer_email }}"
+
+        },
+
+        "theme": {
+
+            "color": "#2563eb"
+
+        }
+
+    };
+
+
+    var rzp = new Razorpay(options);
+
+    rzp.open();
+
+}
+
+</script>
+
+{% endif %}
+
+
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Refund Payment</title>
+</head>
+
+<body>
+
+    <h1>Refund Payment</h1>
+
+    <p>
+        Transaction ID:
+        {{ transaction.transaction_id }}
+    </p>
+
+    <p>
+        Customer:
+        {{ transaction.customer_name }}
+    </p>
+
+    <p>
+        Amount:
+        ₹{{ transaction.amount }}
+    </p>
+
+    <p>
+        Current Status:
+        {{ transaction.get_status_display }}
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button type="submit">
+            Confirm Refund
+        </button>
+    </form>
+
+    <br>
+
+    <a href="/history/">Back to Transaction History</a>
+
+</body>
+</html>

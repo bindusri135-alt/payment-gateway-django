@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Transaction History</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f7fb;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .refunded {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .refund-btn {
+            background: #dc2626;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .refund-btn:hover {
+            background: #b91c1c;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 18px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .back-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>Transaction History</h1>
+
+        <table>
+
+            <tr>
+                <th>Transaction ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+
+
+            {% for transaction in transactions %}
+
+            <tr>
+
+                <td>
+                    {{ transaction.transaction_id }}
+                </td>
+
+                <td>
+                    {{ transaction.customer_name }}
+                </td>
+
+                <td>
+                    ₹{{ transaction.amount }}
+                </td>
+
+                <td>
+                    {{ transaction.get_payment_method_display }}
+                </td>
+
+                <td>
+
+                    {% if transaction.status == "success" %}
+
+                        <span class="success">
+                            {{ transaction.get_status_display }}
+                        </span>
+
+                    {% elif transaction.status == "refunded" %}
+
+                        <span class="refunded">
+                            {{ transaction.get_status_display }}
+                        </span>
+
+                    {% else %}
+
+                        {{ transaction.get_status_display }}
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ transaction.created_at }}
+                </td>
+
+                <td>
+
+                    {% if transaction.status == "success" %}
+
+                        <a
+                            class="refund-btn"
+                            href="/refund/{{ transaction.transaction_id }}/"
+                        >
+                            Refund
+                        </a>
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="7" class="empty">
+                    No transactions yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+
+        <a class="back-btn" href="/">
+            ← Make Payment
+        </a>
+
+    </div>
+
+</body>
+
+</html>

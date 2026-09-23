@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 35px;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            width: 220px;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin: 10px 0;
+            color: #0d6efd;
+            font-size: 30px;
+        }
+
+        .card p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 20px;
+            background: #0d6efd;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .links a:hover {
+            background: #084298;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Payment Dashboard</h1>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <p>Total Transactions</p>
+            <h2>{{ total_transactions }}</h2>
+        </div>
+
+        <div class="card">
+            <p>Successful Payments</p>
+            <h2>{{ successful_payments }}</h2>
+        </div>
+
+        <div class="card">
+            <p>Refunded Payments</p>
+            <h2>{{ refunded_payments }}</h2>
+        </div>
+
+        <div class="card">
+            <p>Total Amount</p>
+            <h2>₹{{ total_amount }}</h2>
+        </div>
+
+    </div>
+
+    <div class="links">
+        <a href="{% url 'payment_page' %}">Make Payment</a>
+
+        <a href="{% url 'transaction_history' %}">
+            Transaction History
+        </a>
+    </div>
+
+</body>
+</html>
