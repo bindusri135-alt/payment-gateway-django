@@ -1,8 +1,10 @@
+
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import PaymentTransaction, Invoice
+from reportlab.pdfgen import canvas
 import uuid
 
 
@@ -115,3 +117,68 @@ def dashboard(request):
         "refunded_payments": refunded_payments,
         "total_amount": total_amount,
     })
+
+
+def invoice_pdf(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    transaction = invoice.transaction
+
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    response["Content-Disposition"] = (
+        f'attachment; filename="{invoice.invoice_number}.pdf"'
+    )
+
+    pdf = canvas.Canvas(response)
+
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(180, 780, "PAYMENT INVOICE")
+
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(
+        80, 730,
+        f"Invoice Number: {invoice.invoice_number}"
+    )
+
+    pdf.drawString(
+        80, 700,
+        f"Transaction ID: {transaction.transaction_id}"
+    )
+
+    pdf.drawString(
+        80, 670,
+        f"Customer: {transaction.customer_name}"
+    )
+
+    pdf.drawString(
+        80, 640,
+        f"Email: {transaction.customer_email}"
+    )
+
+    pdf.drawString(
+        80, 610,
+        f"Amount: Rs. {transaction.amount}"
+    )
+
+    pdf.drawString(
+        80, 580,
+        f"Payment Method: {transaction.get_payment_method_display()}"
+    )
+
+    pdf.drawString(
+        80, 550,
+        f"Status: {transaction.status}"
+    )
+
+    pdf.showPage()
+    pdf.save()
+
+    return response
+

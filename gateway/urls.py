@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import payment_page, transaction_history, refund_payment, webhook, dashboard
+from .views import payment_page, transaction_history, refund_payment, webhook, dashboard, invoice_pdf
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path("refund/<str:transaction_id>/", refund_payment, name="refund_payment"),
     path("webhook/", webhook, name="webhook"),
     path("dashboard/", dashboard, name="dashboard"),
+    path("invoice/<int:invoice_id>/pdf/", invoice_pdf, name="invoice_pdf"),
 ]

@@ -11,6 +11,7 @@ class PaymentTransactionAdmin(admin.ModelAdmin):
         'amount',
         'payment_method',
         'status',
+        'verified_at',
         'created_at',
     )
 
